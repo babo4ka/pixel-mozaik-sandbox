@@ -1,6 +1,8 @@
 package org.example;
 
 
+import org.example.readyAlg.MozaikMaker;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +31,7 @@ public class PixelsArt3 {
     static int fifthBound;
 
     static final int size = 4;
+
 
     public static void main(String[] args) throws IOException {
 
