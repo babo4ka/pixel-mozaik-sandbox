@@ -2,9 +2,8 @@ package org.example.readyAlg
 
 import java.awt.Color
 import java.awt.image.BufferedImage
-import java.nio.Buffer
 
-class MozaikMaker() {
+class MosaicMaker() {
 
     private val firstLevelColor = Color(16, 21, 24)
     private val secondLevelColor = Color(27, 35, 46)
@@ -12,17 +11,8 @@ class MozaikMaker() {
     private val fourthLevelColor = Color(153, 161, 172)
     private val fifthLevelColor = Color(237, 241, 240)
 
-    private var firstBound = 0
-    private var secondBound = 0
-    private var thirdBound = 0
-    private var fourthBound = 0
-    private var fifthBound = 0
 
-    private var max = Int.MIN_VALUE
-    private var min = Int.MAX_VALUE
-
-
-    fun getMozaik(inputImage: BufferedImage, size: Int): BufferedImage {
+    fun getMosaic(inputImage: BufferedImage, size: Int): BufferedImage {
         val width = inputImage.width
         val height = inputImage.height
 
@@ -32,8 +22,11 @@ class MozaikMaker() {
         val resized = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
         val resizedG = resized.createGraphics()
 
-        var colorIntsSum:Long = 0
+        var colorIntsSum: Long = 0
         var colorIntsCounter = 0
+
+        var max = Int.MIN_VALUE
+        var min = Int.MAX_VALUE
 
         val averageColors: Array<Array<Int>> = Array(resizedWidth) { Array(resizedHeight) { 0 } }
         var xPos = 0
@@ -75,12 +68,12 @@ class MozaikMaker() {
         }
 
 
-        val avg:Long = colorIntsSum / colorIntsCounter
-        setBounds(min, (avg - min), (max - avg))
+        val avg: Long = colorIntsSum / colorIntsCounter
+        val bounds = getBounds(min, (avg - min), (max - avg))
 
         for (i in 0..<resizedWidth) {
             for (j in 0..<resizedHeight) {
-                averageColors[i][j] = getGrayColor(averageColors[i][j]).rgb
+                averageColors[i][j] = getGrayColor(averageColors[i][j], min, bounds).rgb
             }
         }
 
@@ -102,37 +95,40 @@ class MozaikMaker() {
         return resized
     }
 
-    private fun getGrayColor(num: Int): Color {
-        return if (between(num, min, firstBound)) firstLevelColor
-        else if (between(num, firstBound, secondBound)) secondLevelColor
-        else if (between(num, secondBound, thirdBound)) thirdLevelColor
-        else if (between(num, thirdBound, fourthBound)) fourthLevelColor
+    private fun getGrayColor(num: Int, min: Int, bounds: Array<Int>): Color {
+        return if (between(num, min, bounds[0])) firstLevelColor
+        else if (between(num, bounds[0], bounds[1])) secondLevelColor
+        else if (between(num, bounds[1], bounds[2])) thirdLevelColor
+        else if (between(num, bounds[2], bounds[3])) fourthLevelColor
         else fifthLevelColor
     }
 
-    private fun setBounds(min: Int, minAvgDiff: Long, maxAvgDiff: Long) {
+    private fun getBounds(min: Int, minAvgDiff: Long, maxAvgDiff: Long): Array<Int> {
         val leftDivider: Long
         val rightDivider: Long
+
+        val bounds: Array<Int> = Array(4) { 0 }
 
         if (minAvgDiff > maxAvgDiff) {
             leftDivider = minAvgDiff / 3
             rightDivider = maxAvgDiff / 2
 
-            firstBound = (min + leftDivider).toInt()
-            secondBound = (firstBound + leftDivider).toInt()
-            thirdBound = (secondBound + leftDivider).toInt()
+            bounds[0] = (min + leftDivider).toInt()
+            bounds[1] = (bounds[0] + leftDivider).toInt()
+            bounds[2] = (bounds[1] + leftDivider).toInt()
         } else {
             leftDivider = minAvgDiff / 2
             rightDivider = maxAvgDiff / 3
 
-            firstBound = (min + leftDivider).toInt()
-            secondBound = (firstBound + leftDivider).toInt()
+            bounds[0] = (min + leftDivider).toInt()
+            bounds[1] = (bounds[0] + leftDivider).toInt()
 
-            thirdBound = (secondBound + rightDivider).toInt()
+            bounds[2] = (bounds[1] + rightDivider).toInt()
         }
 
-        fourthBound = (thirdBound + rightDivider).toInt()
-        fifthBound = (fourthBound + rightDivider).toInt()
+        bounds[3] = (bounds[2] + rightDivider).toInt()
+
+        return bounds
     }
 
     val between: (Int, Int, Int) -> Boolean = { num, min, max -> num in min..max }

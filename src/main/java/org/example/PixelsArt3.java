@@ -1,8 +1,6 @@
 package org.example;
 
 
-import org.example.readyAlg.MozaikMaker;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
