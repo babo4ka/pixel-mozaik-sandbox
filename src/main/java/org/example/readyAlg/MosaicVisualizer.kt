@@ -16,11 +16,11 @@ class MosaicVisualizer {
     private val fourthLevelColor = Color(153, 161, 172)
     private val fifthLevelColor = Color(237, 241, 240)
 
-    private val first = ImageIO.read(File("first.png"))
-    private val second = ImageIO.read(File("second.png"))
-    private val third = ImageIO.read(File("third.png"))
-    private val fourth = ImageIO.read(File("fourth.png"))
-    private val fifth = ImageIO.read(File("fifth.png"))
+    private val first = ImageIO.read(File("first_lego.png"))
+    private val second = ImageIO.read(File("second_lego.png"))
+    private val third = ImageIO.read(File("third_lego.png"))
+    private val fourth = ImageIO.read(File("fourth_lego.png"))
+    private val fifth = ImageIO.read(File("fifth_lego.png"))
 
     fun visualizeMosaic(image: BufferedImage, size:Int):BufferedImage{
         val width = image.width
@@ -29,25 +29,35 @@ class MosaicVisualizer {
         val resized = BufferedImage(width*size, height*size, BufferedImage.TYPE_INT_RGB)
         val resizedG = resized.createGraphics()
 
-        var inputImageX = 0
         var inputImageY = 0
 
 
-        for(x in 0..<resized.width-size step size){
-            for(y in 0..resized.height-size step size){
+        var counter = 0
+
+        for((inputImageX, x) in (0 .. resized.width - size step size).withIndex()){
+            for(y in 0 .. resized.height - size step size){
                 val color = Color(image.getRGB(inputImageX, inputImageY))
                 //resizedG.color = color
-                resizedG.drawImage(image(color), null, x, y)
+                val img = image(color)
+                if(counter < 1000){
+                    println("( $x, $y )")
+                    counter++
+                }
+
+
+                resizedG.drawImage(img, null, x, y)
+
                 //resizedG.fillRect(x, y, width*size, height*size)
                 inputImageY++
             }
             inputImageY = 0
-            inputImageX++
         }
+
 
         resizedG.dispose()
         return resized
     }
+
 
     fun image(color: Color):BufferedImage{
         return if(color == firstLevelColor){

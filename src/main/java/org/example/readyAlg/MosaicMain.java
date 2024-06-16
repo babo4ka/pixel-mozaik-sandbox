@@ -1,6 +1,7 @@
 package org.example.readyAlg;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class MosaicMain {
 
         MosaicVisualizer mv = new MosaicVisualizer();
 
-        BufferedImage visual = mv.visualizeMosaic(mosaic, 32);
+        BufferedImage visual = mv.visualizeMosaic(mosaic, 8);
 
         ImageIO.write(visual, "jpg", new File(visualOutput));
 
