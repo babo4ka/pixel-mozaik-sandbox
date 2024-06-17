@@ -26,6 +26,8 @@ class MosaicVisualizer {
         val width = image.width
         val height = image.height
 
+
+
         val resized = BufferedImage(width*size, height*size, BufferedImage.TYPE_INT_RGB)
         val resizedG = resized.createGraphics()
 
@@ -44,8 +46,43 @@ class MosaicVisualizer {
                     counter++
                 }
 
+                resized.getSubimage(x, y, size, size).data = img.data
+                //resizedG.drawImage(img, null, x, y)
 
-                resizedG.drawImage(img, null, x, y)
+                //resizedG.fillRect(x, y, width*size, height*size)
+                inputImageY++
+            }
+            inputImageY = 0
+        }
+
+
+        resizedG.dispose()
+        return resized
+    }
+
+    fun vis(image: BufferedImage, size:Int):BufferedImage{
+        val width = image.width
+        val height = image.height
+
+        val resized = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+        val resizedG = resized.createGraphics()
+
+        var inputImageY = 0
+
+        var counter = 0
+
+        for((inputImageX, x) in (0 .. width - size step size).withIndex()){
+            for(y in 0 .. height - size step size){
+                val color = Color(image.getRGB(x, y))
+                //resizedG.color = color
+                val img = image(color)
+                if(counter < 1000){
+                    println("( $x, $y )")
+                    counter++
+                }
+
+                resized.getSubimage(x, y, size, size).data = img.data
+                //resizedG.drawImage(img, null, x, y)
 
                 //resizedG.fillRect(x, y, width*size, height*size)
                 inputImageY++

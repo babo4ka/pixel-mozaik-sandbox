@@ -14,11 +14,11 @@ class MosaicMaker {
     private val fourthLevelColor = Color(153, 161, 172)
     private val fifthLevelColor = Color(237, 241, 240)
 
-    private val first = ImageIO.read(File("first_lego.png"))
-    private val second = ImageIO.read(File("second_lego.png"))
-    private val third = ImageIO.read(File("third_lego.png"))
-    private val fourth = ImageIO.read(File("fourth_lego.png"))
-    private val fifth = ImageIO.read(File("fifth_lego.png"))
+    private val first = ImageIO.read(File("hide/first_lego.png"))
+    private val second = ImageIO.read(File("hide/second_lego.png"))
+    private val third = ImageIO.read(File("hide/third_lego.png"))
+    private val fourth = ImageIO.read(File("hide/fourth_lego.png"))
+    private val fifth = ImageIO.read(File("hide/fifth_lego.png"))
 
     fun getMosaic(inputImage: BufferedImage, size: Int): BufferedImage {
 //        val minimizedImage = minimizeImage(inputImage, 2)
@@ -42,14 +42,14 @@ class MosaicMaker {
         var xPos = 0
         var yPos = 0
 
-        for (x in 0..<width - size step size) {
-            for (y in 0..<height - size step size) {
+        for (x in 0..width - size step size) {
+            for (y in 0..height - size step size) {
                 var redC = 0
                 var greenC = 0
                 var blueC = 0
 
-                for (xIn in 0..<size - 1) {
-                    for (yIn in 0..<size - 1) {
+                for (xIn in 0 until size) {
+                    for (yIn in 0 until size) {
                         val colorInt = inputImage.getRGB(x + xIn, y + yIn)
                         val color = Color(colorInt)
 
@@ -90,10 +90,12 @@ class MosaicMaker {
         var newImageX = 0
         var newImageY = 0
 
-        for (i in 0..<resizedWidth) {
-            for (j in 0..<resizedHeight) {
-                resizedG.color = Color(averageColors[i][j], true)
-                resizedG.fillRect(newImageX, newImageY, size, size)
+        for (i in 0 until resizedWidth) {
+            for (j in 0 until resizedHeight) {
+//                resizedG.color = Color(averageColors[i][j], true)
+//                resizedG.fillRect(newImageX, newImageY, size, size)
+
+                resized.getSubimage(newImageX, newImageY, size, size).data = image(Color(averageColors[i][j])).data
                 //resizedG.drawImage(image(Color(averageColors[i][j])), null, i, j)
                 newImageY += size
             }
