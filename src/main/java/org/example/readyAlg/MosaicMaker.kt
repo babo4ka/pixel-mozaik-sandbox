@@ -14,15 +14,13 @@ class MosaicMaker {
     private val fourthLevelColor = Color(153, 161, 172)
     private val fifthLevelColor = Color(237, 241, 240)
 
-    private val first = ImageIO.read(File("hide/first_lego.png"))
-    private val second = ImageIO.read(File("hide/second_lego.png"))
-    private val third = ImageIO.read(File("hide/third_lego.png"))
-    private val fourth = ImageIO.read(File("hide/fourth_lego.png"))
-    private val fifth = ImageIO.read(File("hide/fifth_lego.png"))
+    private val first = ImageIO.read(File("first_lego.png"))
+    private val second = ImageIO.read(File("second_lego.png"))
+    private val third = ImageIO.read(File("third_lego.png"))
+    private val fourth = ImageIO.read(File("fourth_lego.png"))
+    private val fifth = ImageIO.read(File("fifth_lego.png"))
 
     fun getMosaic(inputImage: BufferedImage, size: Int): BufferedImage {
-//        val minimizedImage = minimizeImage(inputImage, 2)
-
         val width = inputImage.width
         val height = inputImage.height
 
@@ -39,10 +37,9 @@ class MosaicMaker {
         var min = Int.MAX_VALUE
 
         val averageColors: Array<Array<Int>> = Array(resizedWidth) { Array(resizedHeight) { 0 } }
-        var xPos = 0
         var yPos = 0
 
-        for (x in 0..width - size step size) {
+        for ((xPos, x) in (0..width - size step size).withIndex()) {
             for (y in 0..height - size step size) {
                 var redC = 0
                 var greenC = 0
@@ -74,7 +71,6 @@ class MosaicMaker {
                 yPos++
             }
             yPos = 0
-            xPos++
         }
 
 
@@ -92,9 +88,6 @@ class MosaicMaker {
 
         for (i in 0 until resizedWidth) {
             for (j in 0 until resizedHeight) {
-//                resizedG.color = Color(averageColors[i][j], true)
-//                resizedG.fillRect(newImageX, newImageY, size, size)
-
                 resized.getSubimage(newImageX, newImageY, size, size).data = image(Color(averageColors[i][j])).data
                 //resizedG.drawImage(image(Color(averageColors[i][j])), null, i, j)
                 newImageY += size
@@ -108,20 +101,6 @@ class MosaicMaker {
         return resized
     }
 
-
-    private fun minimizeImage(image: BufferedImage, size: Int):BufferedImage{
-        val width = image.width / size
-        val height = image.height / size
-
-        val resized = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-        val g = resized.createGraphics()
-
-        g.drawImage(image.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null)
-
-        g.dispose()
-
-        return resized
-    }
 
     private fun getGrayColor(num: Int, min: Int, bounds: Array<Int>): Color {
         return if (between(num, min, bounds[0])) firstLevelColor
@@ -159,19 +138,16 @@ class MosaicMaker {
         return bounds
     }
 
-    fun image(color: Color):BufferedImage{
-        return if(color == firstLevelColor){
-            first
-        }else if(color == secondLevelColor){
-            second
-        }else if (color == thirdLevelColor){
-            third
-        }else if(color == fourthLevelColor){
-            fourth
-        }else{
-            fifth
+    private val image: (Color) -> BufferedImage = {
+         when(it){
+            firstLevelColor -> first
+            secondLevelColor -> second
+            thirdLevelColor -> third
+            fourthLevelColor -> fourth
+            else -> fifth
         }
     }
 
-    val between: (Int, Int, Int) -> Boolean = { num, min, max -> num in min..max }
+
+    private val between: (Int, Int, Int) -> Boolean = { num, min, max -> num in min..max }
 }
